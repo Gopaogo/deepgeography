@@ -1,0 +1,3418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geography Bee Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4285f4;
+            --secondary: #34a853;
+            --danger: #ea4335;
+            --warning: #fbbc05;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .difficulty-selector, .category-selector {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        select, button {
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #3367d6;
+        }
+        
+        .score-display {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .score-value {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        
+        .flashcard {
+            width: 100%;
+            min-height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            background-color: white;
+            border-radius: var(--border-radius);
+        }
+        
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background-color: #f8f9fa;
+        }
+        
+        .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .answer {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .additional-info {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .flag-img {
+            max-width: 200px;
+            max-height: 120px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .correct-btn {
+            background-color: var(--secondary);
+        }
+        
+        .incorrect-btn {
+            background-color: var(--danger);
+        }
+        
+        .next-btn {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+        
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            padding: 50px 0;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #e0e0e0;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .difficulty-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .easy {
+            background-color: var(--secondary);
+        }
+        
+        .medium {
+            background-color: var(--warning);
+        }
+        
+        .hard {
+            background-color: var(--danger);
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+            }
+            
+            .difficulty-selector, .category-selector {
+                width: 100%;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            .answer {
+                font-size: 20px;
+            }
+            
+            .flag-img {
+                max-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Geography Bee Practice</h1>
+            <p>Test your geography knowledge with these flashcards</p>
+        </header>
+        
+        <div class="controls">
+            <div class="difficulty-selector">
+                <select id="difficulty">
+                    <option value="all">All Difficulties</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <div class="category-selector">
+                <select id="category">
+                    <option value="all">All Categories</option>
+                    <option value="countries">Countries</option>
+                    <option value="capitals">Capitals</option>
+                    <option value="flags">Flags</option>
+                    <option value="cities">Major Cities</option>
+                    <option value="features">Geographical Features</option>
+                </select>
+            </div>
+            <button id="new-question-btn">New Question</button>
+        </div>
+        
+        <div class="score-display">
+            <span>Score: <span class="score-value" id="score">0</span></span>
+            <span>Questions: <span class="score-value" id="total-questions">0</span></span>
+            <span>Accuracy: <span class="score-value" id="accuracy">0%</span></span>
+        </div>
+        
+        <div class="flashcard-container">
+            <div class="flashcard" id="flashcard">
+                <div class="flashcard-front">
+                    <div class="loading">Loading question...</div>
+                </div>
+                <div class="flashcard-back"></div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="correct-btn" id="correct-btn"><i class="fas fa-check"></i> Correct</button>
+            <button class="incorrect-btn" id="incorrect-btn"><i class="fas fa-times"></i> Incorrect</button>
+            <button class="next-btn" id="next-btn">Next Question <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        // Extensive geography database
+        const geographyDB = {
+            countries: [
+                {
+                    name: "Japan",
+                    capital: "Tokyo",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/9/9e/Flag_of_Japan.svg/1200px-Flag_of_Japan.svg.png",
+                    clues: [
+                        "Known as the Land of the Rising Sun",
+                        "This island nation is home to Mount Fuji",
+                        "Hosted the 2020 Summer Olympics",
+                        "Currency is the yen"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Turkey",
+                    capital: "Ankara",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Flag_of_Turkey.svg/1200px-Flag_of_Turkey.svg.png",
+                    clues: [
+                        "Straddles Europe and Asia, with Istanbul as its largest city",
+                        "Former center of the Ottoman Empire",
+                        "Home to the ancient city of Troy",
+                        "Currency is the lira"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Brazil",
+                    capital: "Brasília",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/0/05/Flag_of_Brazil.svg/1200px-Flag_of_Brazil.svg.png",
+                    clues: [
+                        "Largest country in South America",
+                        "Home to the Amazon Rainforest",
+                        "Official language is Portuguese",
+                        "Hosted the 2016 Summer Olympics"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "South Africa",
+                    capital: "Pretoria (executive), Cape Town (legislative), Bloemfontein (judicial)",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Flag_of_South_Africa.svg/1200px-Flag_of_South_Africa.svg.png",
+                    clues: [
+                        "Has three capital cities",
+                        "Hosted the 2010 FIFA World Cup",
+                        "Home to Nelson Mandela",
+                        "Currency is the rand"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Canada",
+                    capital: "Ottawa",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Canada_%28Pantone%29.svg/1200px-Flag_of_Canada_%28Pantone%29.svg.png",
+                    clues: [
+                        "Second largest country by land area",
+                        "Known for its maple syrup and hockey",
+                        "Has two official languages: English and French",
+                        "Currency is the Canadian dollar"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Australia",
+                    capital: "Canberra",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Flag_of_Australia_%28converted%29.svg/1200px-Flag_of_Australia_%28converted%29.svg.png",
+                    clues: [
+                        "World's smallest continent and largest island",
+                        "Home to the Great Barrier Reef",
+                        "Currency is the Australian dollar",
+                        "Famous for kangaroos and koalas"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "India",
+                    capital: "New Delhi",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/4/41/Flag_of_India.svg/1200px-Flag_of_India.svg.png",
+                    clues: [
+                        "Second most populous country in the world",
+                        "Home to the Taj Mahal",
+                        "Currency is the rupee",
+                        "Official languages include Hindi and English"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "China",
+                    capital: "Beijing",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_the_People%27s_Republic_of_China.svg/1200px-Flag_of_the_People%27s_Republic_of_China.svg.png",
+                    clues: [
+                        "Most populous country in the world",
+                        "Home to the Great Wall",
+                        "Currency is the yuan",
+                        "Hosted the 2008 Summer Olympics"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Russia",
+                    capital: "Moscow",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Flag_of_Russia.svg/1200px-Flag_of_Russia.svg.png",
+                    clues: [
+                        "Largest country by land area",
+                        "Spans 11 time zones",
+                        "Currency is the ruble",
+                        "Home to Lake Baikal, the deepest freshwater lake"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Egypt",
+                    capital: "Cairo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/1200px-Flag_of_Egypt.svg.png",
+                    clues: [
+                        "Home to the ancient pyramids and Sphinx",
+                        "The Nile River flows through this country",
+                        "Currency is the pound",
+                        "Most of its population lives along the Nile"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "France",
+                    capital: "Paris",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png",
+                    clues: [
+                        "Home to the Eiffel Tower and Louvre Museum",
+                        "Currency is the euro",
+                        "Hosted the 2024 Summer Olympics",
+                        "Famous for its wine and cheese"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Germany",
+                    capital: "Berlin",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1200px-Flag_of_Germany.svg.png",
+                    clues: [
+                        "Largest economy in Europe",
+                        "Currency is the euro",
+                        "Famous for Oktoberfest and autobahns",
+                        "Berlin Wall divided this country during the Cold War"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "United Kingdom",
+                    capital: "London",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ae/Flag_of_the_United_Kingdom.svg/1200px-Flag_of_the_United_Kingdom.svg.png",
+                    clues: [
+                        "Consists of England, Scotland, Wales, and Northern Ireland",
+                        "Currency is the pound sterling",
+                        "Home to Big Ben and Buckingham Palace",
+                        "Former center of the British Empire"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Italy",
+                    capital: "Rome",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Flag_of_Italy.svg/1200px-Flag_of_Italy.svg.png",
+                    clues: [
+                        "Shaped like a boot",
+                        "Home to the Colosseum and Vatican City",
+                        "Currency is the euro",
+                        "Famous for pizza and pasta"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Mexico",
+                    capital: "Mexico City",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Mexico.svg/1200px-Flag_of_Mexico.svg.png",
+                    clues: [
+                        "Home to ancient Aztec and Mayan civilizations",
+                        "Currency is the peso",
+                        "Famous for tacos and Day of the Dead celebrations",
+                        "Shares border with the United States"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Argentina",
+                    capital: "Buenos Aires",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Flag_of_Argentina.svg/1200px-Flag_of_Argentina.svg.png",
+                    clues: [
+                        "Second largest country in South America",
+                        "Home to Patagonia and the Andes mountains",
+                        "Currency is the peso",
+                        "Famous for tango dance and beef"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "South Korea",
+                    capital: "Seoul",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/1200px-Flag_of_South_Korea.svg.png",
+                    clues: [
+                        "Known for K-pop and Korean dramas",
+                        "Currency is the won",
+                        "Hosted the 2018 Winter Olympics",
+                        "Shares border with North Korea"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Nigeria",
+                    capital: "Abuja",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flag_of_Nigeria.svg/1200px-Flag_of_Nigeria.svg.png",
+                    clues: [
+                        "Most populous country in Africa",
+                        "Currency is the naira",
+                        "Home to Nollywood film industry",
+                        "Major producer of oil"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Switzerland",
+                    capital: "Bern",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Flag_of_Switzerland_%28Pantone%29.svg/1200px-Flag_of_Switzerland_%28Pantone%29.svg.png",
+                    clues: [
+                        "Known for its neutrality and banking system",
+                        "Home to the Alps and Matterhorn",
+                        "Currency is the franc",
+                        "Famous for chocolate and watches"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Sweden",
+                    capital: "Stockholm",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Flag_of_Sweden.svg/1200px-Flag_of_Sweden.svg.png",
+                    clues: [
+                        "Home of the Nobel Prize (except Peace)",
+                        "Currency is the krona",
+                        "Famous for IKEA and ABBA",
+                        "Part of Scandinavia"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Norway",
+                    capital: "Oslo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Flag_of_Norway.svg/1200px-Flag_of_Norway.svg.png",
+                    clues: [
+                        "Known for its fjords and midnight sun",
+                        "Currency is the krone",
+                        "Home to the Nobel Peace Prize",
+                        "Part of Scandinavia"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Denmark",
+                    capital: "Copenhagen",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Flag_of_Denmark.svg/1200px-Flag_of_Denmark.svg.png",
+                    clues: [
+                        "Home of Lego and Hans Christian Andersen",
+                        "Currency is the krone",
+                        "Includes Greenland and Faroe Islands",
+                        "Part of Scandinavia"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Finland",
+                    capital: "Helsinki",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Finland.svg/1200px-Flag_of_Finland.svg.png",
+                    clues: [
+                        "Known as the Land of a Thousand Lakes",
+                        "Currency is the euro",
+                        "Home to Santa Claus Village",
+                        "Part of Scandinavia"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Netherlands",
+                    capital: "Amsterdam",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Flag_of_the_Netherlands.svg/1200px-Flag_of_the_Netherlands.svg.png",
+                    clues: [
+                        "Also known as Holland",
+                        "Currency is the euro",
+                        "Famous for tulips, windmills, and bicycles",
+                        "Much of the country is below sea level"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Belgium",
+                    capital: "Brussels",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Belgium.svg/1200px-Flag_of_Belgium.svg.png",
+                    clues: [
+                        "Home to the European Union headquarters",
+                        "Currency is the euro",
+                        "Famous for chocolate and waffles",
+                        "Has three official languages"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Portugal",
+                    capital: "Lisbon",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Portugal.svg/1200px-Flag_of_Portugal.svg.png",
+                    clues: [
+                        "Westernmost country in mainland Europe",
+                        "Currency is the euro",
+                        "Famous for port wine and explorers like Vasco da Gama",
+                        "Shares Iberian Peninsula with Spain"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Greece",
+                    capital: "Athens",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Flag_of_Greece.svg/1200px-Flag_of_Greece.svg.png",
+                    clues: [
+                        "Birthplace of democracy and Olympic Games",
+                        "Currency is the euro",
+                        "Home to ancient sites like the Acropolis",
+                        "Has thousands of islands"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Poland",
+                    capital: "Warsaw",
+                    flag: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/Flag_of_Poland.svg/1200px-Flag_of_Poland.svg.png",
+                    clues: [
+                        "Largest country in Central Europe",
+                        "Currency is the złoty",
+                        "Home to Auschwitz concentration camp",
+                        "Famous for scientist Marie Curie"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Austria",
+                    capital: "Vienna",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Flag_of_Austria.svg/1200px-Flag_of_Austria.svg.png",
+                    clues: [
+                        "Home to the Alps and classical composers like Mozart",
+                        "Currency is the euro",
+                        "Capital is known for its coffeehouse culture",
+                        "Former center of the Habsburg Empire"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Ireland",
+                    capital: "Dublin",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Flag_of_Ireland.svg/1200px-Flag_of_Ireland.svg.png",
+                    clues: [
+                        "Known as the Emerald Isle",
+                        "Currency is the euro",
+                        "Famous for Guinness beer and St. Patrick's Day",
+                        "Shares island with Northern Ireland"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "New Zealand",
+                    capital: "Wellington",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Flag_of_New_Zealand.svg/1200px-Flag_of_New_Zealand.svg.png",
+                    clues: [
+                        "Known for its Maori culture and rugby team",
+                        "Currency is the dollar",
+                        "Filming location for Lord of the Rings",
+                        "Consists of North and South Islands"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Thailand",
+                    capital: "Bangkok",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Flag_of_Thailand.svg/1200px-Flag_of_Thailand.svg.png",
+                    clues: [
+                        "Formerly known as Siam",
+                        "Currency is the baht",
+                        "Famous for its temples and beaches",
+                        "Only Southeast Asian country never colonized"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Vietnam",
+                    capital: "Hanoi",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1200px-Flag_of_Vietnam.svg.png",
+                    clues: [
+                        "Long, narrow country in Southeast Asia",
+                        "Currency is the đồng",
+                        "Famous for pho and banh mi",
+                        "Site of the Vietnam War"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Indonesia",
+                    capital: "Jakarta",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Indonesia.svg/1200px-Flag_of_Indonesia.svg.png",
+                    clues: [
+                        "Largest archipelago in the world",
+                        "Currency is the rupiah",
+                        "Home to Bali and Komodo dragons",
+                        "Most populous Muslim-majority country"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Malaysia",
+                    capital: "Kuala Lumpur",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/Flag_of_Malaysia.svg/1200px-Flag_of_Malaysia.svg.png",
+                    clues: [
+                        "Home to the Petronas Twin Towers",
+                        "Currency is the ringgit",
+                        "Divided into Peninsular and East Malaysia",
+                        "Famous for its diverse cuisine"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Philippines",
+                    capital: "Manila",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_the_Philippines.svg/1200px-Flag_of_the_Philippines.svg.png",
+                    clues: [
+                        "Archipelago of over 7,000 islands",
+                        "Currency is the peso",
+                        "Only predominantly Christian country in Asia",
+                        "Famous for its beaches and boxing champions"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Singapore",
+                    capital: "Singapore",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Flag_of_Singapore.svg/1200px-Flag_of_Singapore.svg.png",
+                    clues: [
+                        "City-state in Southeast Asia",
+                        "Currency is the dollar",
+                        "Known for its strict laws and cleanliness",
+                        "Has four official languages"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Israel",
+                    capital: "Jerusalem",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Israel.svg/1200px-Flag_of_Israel.svg.png",
+                    clues: [
+                        "Holy land for Judaism, Christianity, and Islam",
+                        "Currency is the shekel",
+                        "Home to the Dead Sea, the lowest point on land",
+                        "Established in 1948"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Saudi Arabia",
+                    capital: "Riyadh",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Flag_of_Saudi_Arabia.svg/1200px-Flag_of_Saudi_Arabia.svg.png",
+                    clues: [
+                        "Birthplace of Islam",
+                        "Currency is the riyal",
+                        "Home to Mecca and Medina",
+                        "World's largest oil exporter"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "United Arab Emirates",
+                    capital: "Abu Dhabi",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Flag_of_the_United_Arab_Emirates.svg/1200px-Flag_of_the_United_Arab_Emirates.svg.png",
+                    clues: [
+                        "Federation of seven emirates including Dubai",
+                        "Currency is the dirham",
+                        "Home to Burj Khalifa, the world's tallest building",
+                        "Major oil producer"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Qatar",
+                    capital: "Doha",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Flag_of_Qatar.svg/1200px-Flag_of_Qatar.svg.png",
+                    clues: [
+                        "Host of the 2022 FIFA World Cup",
+                        "Currency is the riyal",
+                        "One of the richest countries per capita",
+                        "Located on a peninsula in the Persian Gulf"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Iran",
+                    capital: "Tehran",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Flag_of_Iran.svg/1200px-Flag_of_Iran.svg.png",
+                    clues: [
+                        "Formerly known as Persia",
+                        "Currency is the rial",
+                        "Home to ancient Persepolis",
+                        "Largest Shia Muslim country"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Iraq",
+                    capital: "Baghdad",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Flag_of_Iraq.svg/1200px-Flag_of_Iraq.svg.png",
+                    clues: [
+                        "Ancient Mesopotamia was located here",
+                        "Currency is the dinar",
+                        "Home to the Tigris and Euphrates rivers",
+                        "Site of ancient Babylon"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Afghanistan",
+                    capital: "Kabul",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Afghanistan_%282013%E2%80%932021%29.svg/1200px-Flag_of_Afghanistan_%282013%E2%80%932021%29.svg.png",
+                    clues: [
+                        "Landlocked country in Central Asia",
+                        "Currency is the afghani",
+                        "Site of prolonged conflict since 2001",
+                        "Known as the Graveyard of Empires"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Pakistan",
+                    capital: "Islamabad",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Flag_of_Pakistan.svg/1200px-Flag_of_Pakistan.svg.png",
+                    clues: [
+                        "Created during the partition of India in 1947",
+                        "Currency is the rupee",
+                        "Home to K2, the second highest mountain",
+                        "Nuclear-armed country"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bangladesh",
+                    capital: "Dhaka",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Flag_of_Bangladesh.svg/1200px-Flag_of_Bangladesh.svg.png",
+                    clues: [
+                        "Formerly East Pakistan",
+                        "Currency is the taka",
+                        "One of the most densely populated countries",
+                        "Vulnerable to flooding from monsoons"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Sri Lanka",
+                    capital: "Colombo (executive), Sri Jayawardenepura Kotte (legislative)",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Sri_Lanka.svg/1200px-Flag_of_Sri_Lanka.svg.png",
+                    clues: [
+                        "Island nation off the coast of India",
+                        "Currency is the rupee",
+                        "Formerly known as Ceylon",
+                        "Famous for tea production"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Nepal",
+                    capital: "Kathmandu",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Flag_of_Nepal.svg/1200px-Flag_of_Nepal.svg.png",
+                    clues: [
+                        "Home to Mount Everest",
+                        "Currency is the rupee",
+                        "Only non-rectangular national flag",
+                        "Birthplace of Buddha"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bhutan",
+                    capital: "Thimphu",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Flag_of_Bhutan.svg/1200px-Flag_of_Bhutan.svg.png",
+                    clues: [
+                        "Known for its Gross National Happiness index",
+                        "Currency is the ngultrum",
+                        "Landlocked in the Himalayas",
+                        "Last remaining Buddhist kingdom"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mongolia",
+                    capital: "Ulaanbaatar",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Flag_of_Mongolia.svg/1200px-Flag_of_Mongolia.svg.png",
+                    clues: [
+                        "Home of Genghis Khan",
+                        "Currency is the tögrög",
+                        "Most sparsely populated country",
+                        "Known for its nomadic culture"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Kazakhstan",
+                    capital: "Nur-Sultan",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Flag_of_Kazakhstan.svg/1200px-Flag_of_Kazakhstan.svg.png",
+                    clues: [
+                        "Largest landlocked country",
+                        "Currency is the tenge",
+                        "Former Soviet republic",
+                        "Home to the Baikonur Cosmodrome"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Uzbekistan",
+                    capital: "Tashkent",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Flag_of_Uzbekistan.svg/1200px-Flag_of_Uzbekistan.svg.png",
+                    clues: [
+                        "Home to the ancient Silk Road cities of Samarkand and Bukhara",
+                        "Currency is the som",
+                        "Double landlocked country",
+                        "Former Soviet republic"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ukraine",
+                    capital: "Kyiv",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Ukraine.svg/1200px-Flag_of_Ukraine.svg.png",
+                    clues: [
+                        "Largest country entirely in Europe",
+                        "Currency is the hryvnia",
+                        "Known as the breadbasket of Europe",
+                        "Site of Chernobyl nuclear disaster"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Belarus",
+                    capital: "Minsk",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Flag_of_Belarus.svg/1200px-Flag_of_Belarus.svg.png",
+                    clues: [
+                        "Known as Europe's last dictatorship",
+                        "Currency is the ruble",
+                        "Former Soviet republic",
+                        "Bordered by Russia to the east"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Romania",
+                    capital: "Bucharest",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Romania.svg/1200px-Flag_of_Romania.svg.png",
+                    clues: [
+                        "Home to Transylvania and Dracula's legend",
+                        "Currency is the leu",
+                        "Former communist country",
+                        "Bordered by the Black Sea"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Hungary",
+                    capital: "Budapest",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Flag_of_Hungary.svg/1200px-Flag_of_Hungary.svg.png",
+                    clues: [
+                        "Home to the Danube River and thermal baths",
+                        "Currency is the forint",
+                        "Language is unrelated to neighboring countries",
+                        "Former Austro-Hungarian Empire"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Czech Republic",
+                    capital: "Prague",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Flag_of_the_Czech_Republic.svg/1200px-Flag_of_the_Czech_Republic.svg.png",
+                    clues: [
+                        "Formerly part of Czechoslovakia",
+                        "Currency is the koruna",
+                        "Home to Bohemia and Moravia regions",
+                        "Known for its beer and castles"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Slovakia",
+                    capital: "Bratislava",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Flag_of_Slovakia.svg/1200px-Flag_of_Slovakia.svg.png",
+                    clues: [
+                        "Formerly part of Czechoslovakia",
+                        "Currency is the euro",
+                        "Bordered by the Carpathian Mountains",
+                        "Capital borders two countries"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Croatia",
+                    capital: "Zagreb",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Flag_of_Croatia.svg/1200px-Flag_of_Croatia.svg.png",
+                    clues: [
+                        "Known for its Adriatic coastline and Dubrovnik",
+                        "Currency is the kuna",
+                        "Former Yugoslav republic",
+                        "Home to Plitvice Lakes National Park"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Serbia",
+                    capital: "Belgrade",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Flag_of_Serbia.svg/1200px-Flag_of_Serbia.svg.png",
+                    clues: [
+                        "Former Yugoslav republic",
+                        "Currency is the dinar",
+                        "Landlocked in the Balkans",
+                        "Home to Novak Djokovic"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bulgaria",
+                    capital: "Sofia",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Flag_of_Bulgaria.svg/1200px-Flag_of_Bulgaria.svg.png",
+                    clues: [
+                        "Uses the Cyrillic alphabet",
+                        "Currency is the lev",
+                        "Bordered by the Black Sea",
+                        "Home to the Rose Valley"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Albania",
+                    capital: "Tirana",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Flag_of_Albania.svg/1200px-Flag_of_Albania.svg.png",
+                    clues: [
+                        "Known as the Land of the Eagles",
+                        "Currency is the lek",
+                        "Former communist country",
+                        "Home to bunkers throughout the country"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "North Macedonia",
+                    capital: "Skopje",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/79/Flag_of_North_Macedonia.svg/1200px-Flag_of_North_Macedonia.svg.png",
+                    clues: [
+                        "Former Yugoslav republic",
+                        "Currency is the denar",
+                        "Landlocked in the Balkans",
+                        "Name changed from Macedonia due to Greek objections"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Montenegro",
+                    capital: "Podgorica",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Flag_of_Montenegro.svg/1200px-Flag_of_Montenegro.svg.png",
+                    clues: [
+                        "Former Yugoslav republic",
+                        "Currency is the euro",
+                        "Bordered by the Adriatic Sea",
+                        "Name means 'Black Mountain'"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bosnia and Herzegovina",
+                    capital: "Sarajevo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Flag_of_Bosnia_and_Herzegovina.svg/1200px-Flag_of_Bosnia_and_Herzegovina.svg.png",
+                    clues: [
+                        "Former Yugoslav republic",
+                        "Currency is the mark",
+                        "Site of the assassination that started WWI",
+                        "Three-part presidency representing major ethnic groups"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Slovenia",
+                    capital: "Ljubljana",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Flag_of_Slovenia.svg/1200px-Flag_of_Slovenia.svg.png",
+                    clues: [
+                        "Former Yugoslav republic",
+                        "Currency is the euro",
+                        "Home to Lake Bled and the Julian Alps",
+                        "First to declare independence from Yugoslavia"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Estonia",
+                    capital: "Tallinn",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Flag_of_Estonia.svg/1200px-Flag_of_Estonia.svg.png",
+                    clues: [
+                        "Northernmost Baltic state",
+                        "Currency is the euro",
+                        "Highly digital society (e-residency program)",
+                        "Former Soviet republic"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Latvia",
+                    capital: "Riga",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Flag_of_Latvia.svg/1200px-Flag_of_Latvia.svg.png",
+                    clues: [
+                        "Middle Baltic state",
+                        "Currency is the euro",
+                        "Former Soviet republic",
+                        "Home to one of Europe's widest waterfalls"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Lithuania",
+                    capital: "Vilnius",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/Flag_of_Lithuania.svg/1200px-Flag_of_Lithuania.svg.png",
+                    clues: [
+                        "Southernmost Baltic state",
+                        "Currency is the euro",
+                        "Former Soviet republic",
+                        "Last European country to convert to Christianity"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Iceland",
+                    capital: "Reykjavík",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Iceland.svg/1200px-Flag_of_Iceland.svg.png",
+                    clues: [
+                        "Land of fire and ice with many volcanoes and glaciers",
+                        "Currency is the króna",
+                        "Most sparsely populated country in Europe",
+                        "Home to the Blue Lagoon"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Malta",
+                    capital: "Valletta",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Flag_of_Malta.svg/1200px-Flag_of_Malta.svg.png",
+                    clues: [
+                        "Archipelago in the Mediterranean",
+                        "Currency is the euro",
+                        "Former British colony",
+                        "Home to megalithic temples older than the pyramids"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Cyprus",
+                    capital: "Nicosia",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Flag_of_Cyprus.svg/1200px-Flag_of_Cyprus.svg.png",
+                    clues: [
+                        "Island divided between Greek and Turkish communities",
+                        "Currency is the euro",
+                        "Last divided capital in Europe",
+                        "Mythical birthplace of Aphrodite"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Luxembourg",
+                    capital: "Luxembourg",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/Flag_of_Luxembourg.svg/1200px-Flag_of_Luxembourg.svg.png",
+                    clues: [
+                        "One of the smallest countries in Europe",
+                        "Currency is the euro",
+                        "One of the richest countries per capita",
+                        "Founding member of the EU"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Liechtenstein",
+                    capital: "Vaduz",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Flag_of_Liechtenstein.svg/1200px-Flag_of_Liechtenstein.svg.png",
+                    clues: [
+                        "Double landlocked microstate",
+                        "Currency is the franc",
+                        "One of the richest countries per capita",
+                        "Ruled by a prince"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Monaco",
+                    capital: "Monaco",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Flag_of_Monaco.svg/1200px-Flag_of_Monaco.svg.png",
+                    clues: [
+                        "Second smallest country in the world",
+                        "Currency is the euro",
+                        "Famous for its Grand Prix and casino",
+                        "Ruled by a prince"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "San Marino",
+                    capital: "San Marino",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/Flag_of_San_Marino.svg/1200px-Flag_of_San_Marino.svg.png",
+                    clues: [
+                        "Oldest surviving sovereign state",
+                        "Currency is the euro",
+                        "Completely surrounded by Italy",
+                        "One of the smallest countries in the world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Andorra",
+                    capital: "Andorra la Vella",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Andorra.svg/1200px-Flag_of_Andorra.svg.png",
+                    clues: [
+                        "Small country in the Pyrenees",
+                        "Currency is the euro",
+                        "Co-principality ruled by France and Spain",
+                        "Known for skiing and tax haven status"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Vatican City",
+                    capital: "Vatican City",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Flag_of_the_Vatican_City.svg/1200px-Flag_of_the_Vatican_City.svg.png",
+                    clues: [
+                        "Smallest country in the world",
+                        "Home of the Pope and Catholic Church",
+                        "Currency is the euro",
+                        "Completely surrounded by Rome"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Colombia",
+                    capital: "Bogotá",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Colombia.svg/1200px-Flag_of_Colombia.svg.png",
+                    clues: [
+                        "Only South American country with coastlines on both Pacific and Caribbean",
+                        "Currency is the peso",
+                        "Famous for coffee and emeralds",
+                        "Home to the Amazon rainforest"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Venezuela",
+                    capital: "Caracas",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Flag_of_Venezuela.svg/1200px-Flag_of_Venezuela.svg.png",
+                    clues: [
+                        "Home to Angel Falls, the world's highest waterfall",
+                        "Currency is the bolívar",
+                        "Has the world's largest oil reserves",
+                        "Named after 'Little Venice' by explorers"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Peru",
+                    capital: "Lima",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Flag_of_Peru.svg/1200px-Flag_of_Peru.svg.png",
+                    clues: [
+                        "Home to Machu Picchu and the Inca Empire",
+                        "Currency is the sol",
+                        "Contains part of the Amazon rainforest",
+                        "Famous for ceviche and guinea pig dishes"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ecuador",
+                    capital: "Quito",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Flag_of_Ecuador.svg/1200px-Flag_of_Ecuador.svg.png",
+                    clues: [
+                        "Named after the equator which runs through it",
+                        "Currency is the dollar",
+                        "Home to the Galápagos Islands",
+                        "Highest capital city in the world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Chile",
+                    capital: "Santiago",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Flag_of_Chile.svg/1200px-Flag_of_Chile.svg.png",
+                    clues: [
+                        "Longest north-south country in the world",
+                        "Currency is the peso",
+                        "Home to Easter Island and Atacama Desert",
+                        "Major wine producer"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bolivia",
+                    capital: "Sucre (constitutional), La Paz (administrative)",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Bandera_de_Bolivia_%28Estado%29.svg/1200px-Bandera_de_Bolivia_%28Estado%29.svg.png",
+                    clues: [
+                        "Landlocked country in South America",
+                        "Currency is the boliviano",
+                        "Home to Lake Titicaca and Salar de Uyuni",
+                        "Named after Simón Bolívar"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Paraguay",
+                    capital: "Asunción",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Flag_of_Paraguay.svg/1200px-Flag_of_Paraguay.svg.png",
+                    clues: [
+                        "Landlocked country in South America",
+                        "Currency is the guaraní",
+                        "Only flag with different emblems on each side",
+                        "Official languages are Spanish and Guaraní"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Uruguay",
+                    capital: "Montevideo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Uruguay.svg/1200px-Flag_of_Uruguay.svg.png",
+                    clues: [
+                        "Smallest Spanish-speaking country in South America",
+                        "Currency is the peso",
+                        "Known for its progressive policies",
+                        "First country to legalize marijuana"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Guyana",
+                    capital: "Georgetown",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Flag_of_Guyana.svg/1200px-Flag_of_Guyana.svg.png",
+                    clues: [
+                        "Only English-speaking country in South America",
+                        "Currency is the dollar",
+                        "Former British colony",
+                        "Home to Kaieteur Falls"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Suriname",
+                    capital: "Paramaribo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Flag_of_Suriname.svg/1200px-Flag_of_Suriname.svg.png",
+                    clues: [
+                        "Only Dutch-speaking country in South America",
+                        "Currency is the dollar",
+                        "Former Dutch colony",
+                        "Smallest country in South America"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "French Guiana",
+                    capital: "Cayenne",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Flag_of_French_Guiana.svg/1200px-Flag_of_French_Guiana.svg.png",
+                    clues: [
+                        "Overseas department of France",
+                        "Currency is the euro",
+                        "Home to the European Space Agency's spaceport",
+                        "Only territory in South America that's part of the EU"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Falkland Islands",
+                    capital: "Stanley",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_Falkland_Islands.svg/1200px-Flag_of_the_Falkland_Islands.svg.png",
+                    clues: [
+                        "British Overseas Territory claimed by Argentina",
+                        "Currency is the pound",
+                        "Site of the 1982 Falklands War",
+                        "Known in Spanish as Islas Malvinas"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Cuba",
+                    capital: "Havana",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Flag_of_Cuba.svg/1200px-Flag_of_Cuba.svg.png",
+                    clues: [
+                        "Largest island in the Caribbean",
+                        "Currency is the peso",
+                        "Communist country since 1959",
+                        "Famous for cigars and classic cars"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Jamaica",
+                    capital: "Kingston",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Flag_of_Jamaica.svg/1200px-Flag_of_Jamaica.svg.png",
+                    clues: [
+                        "Third largest island in the Caribbean",
+                        "Currency is the dollar",
+                        "Home to reggae music and Bob Marley",
+                        "Only country with black, green, and gold flag without other colors"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Haiti",
+                    capital: "Port-au-Prince",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Flag_of_Haiti.svg/1200px-Flag_of_Haiti.svg.png",
+                    clues: [
+                        "First independent nation in Latin America",
+                        "Currency is the gourde",
+                        "Shares island of Hispaniola with Dominican Republic",
+                        "Only country with French and Haitian Creole as official languages"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Dominican Republic",
+                    capital: "Santo Domingo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_the_Dominican_Republic.svg/1200px-Flag_of_the_Dominican_Republic.svg.png",
+                    clues: [
+                        "Shares island of Hispaniola with Haiti",
+                        "Currency is the peso",
+                        "First permanent European settlement in the Americas",
+                        "Famous for baseball players"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Puerto Rico",
+                    capital: "San Juan",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Flag_of_Puerto_Rico.svg/1200px-Flag_of_Puerto_Rico.svg.png",
+                    clues: [
+                        "US territory with commonwealth status",
+                        "Currency is the dollar",
+                        "Spanish and English are official languages",
+                        "Home to the Arecibo Observatory"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bahamas",
+                    capital: "Nassau",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Flag_of_the_Bahamas.svg/1200px-Flag_of_the_Bahamas.svg.png",
+                    clues: [
+                        "Archipelago in the Atlantic Ocean",
+                        "Currency is the dollar",
+                        "Site of Columbus's first landfall in the New World",
+                        "Famous for its pink sand beaches"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Barbados",
+                    capital: "Bridgetown",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Flag_of_Barbados.svg/1200px-Flag_of_Barbados.svg.png",
+                    clues: [
+                        "Easternmost island in the Caribbean",
+                        "Currency is the dollar",
+                        "Recently became a republic, removing the British monarch as head of state",
+                        "Birthplace of Rihanna"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Trinidad and Tobago",
+                    capital: "Port of Spain",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Flag_of_Trinidad_and_Tobago.svg/1200px-Flag_of_Trinidad_and_Tobago.svg.png",
+                    clues: [
+                        "Southernmost Caribbean country",
+                        "Currency is the dollar",
+                        "Home to the steelpan, the only acoustic musical instrument invented in the 20th century",
+                        "Largest natural deposit of asphalt is located here"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Grenada",
+                    capital: "St. George's",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Grenada.svg/1200px-Flag_of_Grenada.svg.png",
+                    clues: [
+                        "Known as the 'Island of Spice'",
+                        "Currency is the dollar",
+                        "Site of US invasion in 1983",
+                        "World's second largest producer of nutmeg"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Saint Lucia",
+                    capital: "Castries",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Flag_of_Saint_Lucia.svg/1200px-Flag_of_Saint_Lucia.svg.png",
+                    clues: [
+                        "Named after Saint Lucy of Syracuse",
+                        "Currency is the dollar",
+                        "Only country named after a woman",
+                        "Home to the Pitons, a UNESCO World Heritage Site"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Antigua and Barbuda",
+                    capital: "St. John's",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Flag_of_Antigua_and_Barbuda.svg/1200px-Flag_of_Antigua_and_Barbuda.svg.png",
+                    clues: [
+                        "Consists of two main islands and several smaller ones",
+                        "Currency is the dollar",
+                        "Home to 365 beaches (one for each day of the year)",
+                        "Last stop of Columbus before returning to Europe"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Saint Vincent and the Grenadines",
+                    capital: "Kingstown",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Flag_of_Saint_Vincent_and_the_Grenadines.svg/1200px-Flag_of_Saint_Vincent_and_the_Grenadines.svg.png",
+                    clues: [
+                        "Chain of islands in the Caribbean",
+                        "Currency is the dollar",
+                        "Filming location for Pirates of the Caribbean",
+                        "Home to the active La Soufrière volcano"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Dominica",
+                    capital: "Roseau",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Flag_of_Dominica.svg/1200px-Flag_of_Dominica.svg.png",
+                    clues: [
+                        "Known as the 'Nature Isle of the Caribbean'",
+                        "Currency is the dollar",
+                        "Home to the world's second largest boiling lake",
+                        "Only country with purple in its flag (on the sisserou parrot)"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Saint Kitts and Nevis",
+                    capital: "Basseterre",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Saint_Kitts_and_Nevis.svg/1200px-Flag_of_Saint_Kitts_and_Nevis.svg.png",
+                    clues: [
+                        "Smallest sovereign state in the Western Hemisphere",
+                        "Currency is the dollar",
+                        "First Caribbean islands to be colonized by Europeans",
+                        "Federation of two islands"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Belize",
+                    capital: "Belmopan",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Flag_of_Belize.svg/1200px-Flag_of_Belize.svg.png",
+                    clues: [
+                        "Only Central American country with English as official language",
+                        "Currency is the dollar",
+                        "Home to the Great Blue Hole",
+                        "Formerly known as British Honduras"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Costa Rica",
+                    capital: "San José",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Costa_Rica.svg/1200px-Flag_of_Costa_Rica.svg.png",
+                    clues: [
+                        "Known for its biodiversity and eco-tourism",
+                        "Currency is the colón",
+                        "No standing army since 1948",
+                        "Home to Arenal Volcano"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "El Salvador",
+                    capital: "San Salvador",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Flag_of_El_Salvador.svg/1200px-Flag_of_El_Salvador.svg.png",
+                    clues: [
+                        "Smallest and most densely populated Central American country",
+                        "Currency is the dollar",
+                        "Known as the 'Land of Volcanoes'",
+                        "Home to surf spot Punta Roca"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Guatemala",
+                    capital: "Guatemala City",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Flag_of_Guatemala.svg/1200px-Flag_of_Guatemala.svg.png",
+                    clues: [
+                        "Most populous Central American country",
+                        "Currency is the quetzal",
+                        "Home to Tikal, ancient Mayan city",
+                        "Named after the quetzal bird"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Honduras",
+                    capital: "Tegucigalpa",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Flag_of_Honduras.svg/1200px-Flag_of_Honduras.svg.png",
+                    clues: [
+                        "Home to the ancient Mayan city of Copán",
+                        "Currency is the lempira",
+                        "Means 'depths' in Spanish, named by Columbus for deep waters off coast",
+                        "Part of the 'Northern Triangle' of Central America"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Nicaragua",
+                    capital: "Managua",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Nicaragua.svg/1200px-Flag_of_Nicaragua.svg.png",
+                    clues: [
+                        "Largest country in Central America",
+                        "Currency is the córdoba",
+                        "Home to Lake Nicaragua, the largest lake in Central America",
+                        "Named after Nicarao, an indigenous chief"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Panama",
+                    capital: "Panama City",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Flag_of_Panama.svg/1200px-Flag_of_Panama.svg.png",
+                    clues: [
+                        "Home to the Panama Canal",
+                        "Currency is the balboa (but uses US dollar)",
+                        "Only place in the world where you can see the sun rise on the Pacific and set on the Atlantic",
+                        "Last country in Central America"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Morocco",
+                    capital: "Rabat",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Flag_of_Morocco.svg/1200px-Flag_of_Morocco.svg.png",
+                    clues: [
+                        "Only African country with coastlines on Atlantic and Mediterranean",
+                        "Currency is the dirham",
+                        "Home to the Atlas Mountains and Sahara Desert",
+                        "Famous for its blue city, Chefchaouen"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Algeria",
+                    capital: "Algiers",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Algeria.svg/1200px-Flag_of_Algeria.svg.png",
+                    clues: [
+                        "Largest country in Africa",
+                        "Currency is the dinar",
+                        "Most of its territory is Sahara Desert",
+                        "Former French colony"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Tunisia",
+                    capital: "Tunis",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Tunisia.svg/1200px-Flag_of_Tunisia.svg.png",
+                    clues: [
+                        "Northernmost country in Africa",
+                        "Currency is the dinar",
+                        "Home to ancient city of Carthage",
+                        "Birthplace of the Arab Spring"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Libya",
+                    capital: "Tripoli",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Flag_of_Libya.svg/1200px-Flag_of_Libya.svg.png",
+                    clues: [
+                        "Most of its territory is Sahara Desert",
+                        "Currency is the dinar",
+                        "Home to ancient Greek and Roman ruins",
+                        "Former Italian colony"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Egypt",
+                    capital: "Cairo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/1200px-Flag_of_Egypt.svg.png",
+                    clues: [
+                        "Home to ancient pyramids and Sphinx",
+                        "Currency is the pound",
+                        "Most of population lives along Nile River",
+                        "Connects Africa to Middle East via Sinai Peninsula"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Sudan",
+                    capital: "Khartoum",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Flag_of_Sudan.svg/1200px-Flag_of_Sudan.svg.png",
+                    clues: [
+                        "Third largest country in Africa",
+                        "Currency is the pound",
+                        "Home to confluence of Blue and White Nile",
+                        "Recently split into Sudan and South Sudan"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "South Sudan",
+                    capital: "Juba",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Flag_of_South_Sudan.svg/1200px-Flag_of_South_Sudan.svg.png",
+                    clues: [
+                        "Newest country in the world (2011)",
+                        "Currency is the pound",
+                        "Gained independence from Sudan",
+                        "Home to the Sudd, one of the world's largest wetlands"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ethiopia",
+                    capital: "Addis Ababa",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Flag_of_Ethiopia.svg/1200px-Flag_of_Ethiopia.svg.png",
+                    clues: [
+                        "Only African country never colonized",
+                        "Currency is the birr",
+                        "Home to the source of the Blue Nile",
+                        "Oldest independent country in Africa"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Eritrea",
+                    capital: "Asmara",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Flag_of_Eritrea.svg/1200px-Flag_of_Eritrea.svg.png",
+                    clues: [
+                        "Gained independence from Ethiopia in 1993",
+                        "Currency is the nakfa",
+                        "Name comes from ancient Greek for 'Red Sea'",
+                        "Known as the 'North Korea of Africa' for its isolation"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Djibouti",
+                    capital: "Djibouti",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Flag_of_Djibouti.svg/1200px-Flag_of_Djibouti.svg.png",
+                    clues: [
+                        "Strategic location on Bab el-Mandeb strait",
+                        "Currency is the franc",
+                        "Hosts military bases for US, France, and China",
+                        "One of the hottest places on Earth"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Somalia",
+                    capital: "Mogadishu",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Flag_of_Somalia.svg/1200px-Flag_of_Somalia.svg.png",
+                    clues: [
+                        "Longest coastline in mainland Africa",
+                        "Currency is the shilling",
+                        "Known for piracy problems",
+                        "Home to the Horn of Africa"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Kenya",
+                    capital: "Nairobi",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Flag_of_Kenya.svg/1200px-Flag_of_Kenya.svg.png",
+                    clues: [
+                        "Home to the Maasai Mara and Mount Kenya",
+                        "Currency is the shilling",
+                        "Known for its long-distance runners",
+                        "Birthplace of safari tourism"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Tanzania",
+                    capital: "Dodoma",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Tanzania.svg/1200px-Flag_of_Tanzania.svg.png",
+                    clues: [
+                        "Home to Mount Kilimanjaro and Zanzibar",
+                        "Currency is the shilling",
+                        "Formed by union of Tanganyika and Zanzibar",
+                        "Site of Serengeti National Park"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Uganda",
+                    capital: "Kampala",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Flag_of_Uganda.svg/1200px-Flag_of_Uganda.svg.png",
+                    clues: [
+                        "Known as the 'Pearl of Africa'",
+                        "Currency is the shilling",
+                        "Home to Lake Victoria, largest lake in Africa",
+                        "Famous for its mountain gorillas"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Rwanda",
+                    capital: "Kigali",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Flag_of_Rwanda.svg/1200px-Flag_of_Rwanda.svg.png",
+                    clues: [
+                        "Known as the 'Land of a Thousand Hills'",
+                        "Currency is the franc",
+                        "Site of 1994 genocide",
+                        "Banned plastic bags in 2008"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Burundi",
+                    capital: "Gitega",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Flag_of_Burundi.svg/1200px-Flag_of_Burundi.svg.png",
+                    clues: [
+                        "One of the poorest countries in the world",
+                        "Currency is the franc",
+                        "Formerly ruled by kings called mwami",
+                        "Home to Lake Tanganyika, second deepest lake in world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Democratic Republic of the Congo",
+                    capital: "Kinshasa",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Flag_of_the_Democratic_Republic_of_the_Congo.svg/1200px-Flag_of_the_Democratic_Republic_of_the_Congo.svg.png",
+                    clues: [
+                        "Second largest country in Africa",
+                        "Currency is the franc",
+                        "Home to Congo River, second longest in Africa",
+                        "Formerly known as Zaire"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Republic of the Congo",
+                    capital: "Brazzaville",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Flag_of_the_Republic_of_the_Congo.svg/1200px-Flag_of_the_Republic_of_the_Congo.svg.png",
+                    clues: [
+                        "Often confused with its larger neighbor",
+                        "Currency is the franc",
+                        "Capital faces Kinshasa across Congo River",
+                        "Former French colony"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Central African Republic",
+                    capital: "Bangui",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Flag_of_the_Central_African_Republic.svg/1200px-Flag_of_the_Central_African_Republic.svg.png",
+                    clues: [
+                        "One of the poorest countries in the world",
+                        "Currency is the franc",
+                        "Landlocked in center of Africa",
+                        "Home to Dzanga-Sangha rainforest"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Chad",
+                    capital: "N'Djamena",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Flag_of_Chad.svg/1200px-Flag_of_Chad.svg.png",
+                    clues: [
+                        "Named after Lake Chad",
+                        "Currency is the franc",
+                        "Landlocked in north-central Africa",
+                        "Home to Ennedi Plateau with ancient rock art"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Cameroon",
+                    capital: "Yaoundé",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Flag_of_Cameroon.svg/1200px-Flag_of_Cameroon.svg.png",
+                    clues: [
+                        "Known as 'Africa in miniature' for its diversity",
+                        "Currency is the franc",
+                        "Home to Mount Cameroon, highest in West Africa",
+                        "Official languages are French and English"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Gabon",
+                    capital: "Libreville",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Flag_of_Gabon.svg/1200px-Flag_of_Gabon.svg.png",
+                    clues: [
+                        "One of the most urbanized countries in Africa",
+                        "Currency is the franc",
+                        "Home to Loango National Park with surfing hippos",
+                        "Named after Portuguese word for 'cloak'"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Equatorial Guinea",
+                    capital: "Malabo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Flag_of_Equatorial_Guinea.svg/1200px-Flag_of_Equatorial_Guinea.svg.png",
+                    clues: [
+                        "Only Spanish-speaking country in Africa",
+                        "Currency is the franc",
+                        "One of the richest countries in Africa per capita (oil wealth)",
+                        "Includes mainland and islands"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "São Tomé and Príncipe",
+                    capital: "São Tomé",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Flag_of_Sao_Tome_and_Principe.svg/1200px-Flag_of_Sao_Tome_and_Principe.svg.png",
+                    clues: [
+                        "Second smallest African country",
+                        "Currency is the dobra",
+                        "Volcanic islands in Gulf of Guinea",
+                        "Former Portuguese colony"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Angola",
+                    capital: "Luanda",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Flag_of_Angola.svg/1200px-Flag_of_Angola.svg.png",
+                    clues: [
+                        "Former Portuguese colony",
+                        "Currency is the kwanza",
+                        "Home to Kalandula Falls, second largest in Africa",
+                        "Capital is one of most expensive cities for expats"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Namibia",
+                    capital: "Windhoek",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Flag_of_Namibia.svg/1200px-Flag_of_Namibia.svg.png",
+                    clues: [
+                        "Named after Namib Desert",
+                        "Currency is the dollar",
+                        "Former German colony",
+                        "Home to Fish River Canyon, second largest in world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Botswana",
+                    capital: "Gaborone",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Flag_of_Botswana.svg/1200px-Flag_of_Botswana.svg.png",
+                    clues: [
+                        "One of most stable democracies in Africa",
+                        "Currency is the pula",
+                        "Home to Okavango Delta and Kalahari Desert",
+                        "World's largest producer of diamonds by value"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Zimbabwe",
+                    capital: "Harare",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Flag_of_Zimbabwe.svg/1200px-Flag_of_Zimbabwe.svg.png",
+                    clues: [
+                        "Formerly Rhodesia",
+                        "Currency is the dollar (but uses US dollar)",
+                        "Home to Victoria Falls",
+                        "Had hyperinflation in 2000s with 100 trillion dollar notes"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Zambia",
+                    capital: "Lusaka",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Flag_of_Zambia.svg/1200px-Flag_of_Zambia.svg.png",
+                    clues: [
+                        "Named after Zambezi River",
+                        "Currency is the kwacha",
+                        "Home to Victoria Falls (called Mosi-oa-Tunya locally)",
+                        "Formerly Northern Rhodesia"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Malawi",
+                    capital: "Lilongwe",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Flag_of_Malawi.svg/1200px-Flag_of_Malawi.svg.png",
+                    clues: [
+                        "Named after Lake Malawi",
+                        "Currency is the kwacha",
+                        "Known as 'Warm Heart of Africa'",
+                        "Home to Lake Malawi, third largest in Africa"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mozambique",
+                    capital: "Maputo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Flag_of_Mozambique.svg/1200px-Flag_of_Mozambique.svg.png",
+                    clues: [
+                        "Only flag with image of modern weapon (AK-47)",
+                        "Currency is the metical",
+                        "Former Portuguese colony",
+                        "Home to Bazaruto Archipelago"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Madagascar",
+                    capital: "Antananarivo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Flag_of_Madagascar.svg/1200px-Flag_of_Madagascar.svg.png",
+                    clues: [
+                        "Fourth largest island in the world",
+                        "Currency is the ariary",
+                        "Home to lemurs and baobab trees",
+                        "Separated from Africa about 160 million years ago"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mauritius",
+                    capital: "Port Louis",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_Mauritius.svg/1200px-Flag_of_Mauritius.svg.png",
+                    clues: [
+                        "Island nation in Indian Ocean",
+                        "Currency is the rupee",
+                        "Only known home of the dodo before extinction",
+                        "Named after Prince Maurice of Nassau"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Seychelles",
+                    capital: "Victoria",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Flag_of_Seychelles.svg/1200px-Flag_of_Seychelles.svg.png",
+                    clues: [
+                        "Smallest African country by population",
+                        "Currency is the rupee",
+                        "Archipelago in Indian Ocean",
+                        "Home to giant tortoises and coco de mer palm"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Comoros",
+                    capital: "Moroni",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Flag_of_the_Comoros.svg/1200px-Flag_of_the_Comoros.svg.png",
+                    clues: [
+                        "Volcanic archipelago off east Africa",
+                        "Currency is the franc",
+                        "Only Arab League country entirely in Southern Hemisphere",
+                        "World's largest producer of ylang-ylang"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Lesotho",
+                    capital: "Maseru",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Flag_of_Lesotho.svg/1200px-Flag_of_Lesotho.svg.png",
+                    clues: [
+                        "Only independent state entirely above 1,000m elevation",
+                        "Currency is the loti",
+                        "Completely surrounded by South Africa",
+                        "Known as the 'Kingdom in the Sky'"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Eswatini",
+                    capital: "Mbabane (administrative), Lobamba (royal and legislative)",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Flag_of_Eswatini.svg/1200px-Flag_of_Eswatini.svg.png",
+                    clues: [
+                        "Formerly known as Swaziland",
+                        "Currency is the lilangeni",
+                        "One of last absolute monarchies in world",
+                        "Bordered by South Africa and Mozambique"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Gambia",
+                    capital: "Banjul",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Flag_of_The_Gambia.svg/1200px-Flag_of_The_Gambia.svg.png",
+                    clues: [
+                        "Smallest country on mainland Africa",
+                        "Currency is the dalasi",
+                        "Surrounded by Senegal except for coast",
+                        "Named after Gambia River"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Senegal",
+                    capital: "Dakar",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Flag_of_Senegal.svg/1200px-Flag_of_Senegal.svg.png",
+                    clues: [
+                        "Westernmost country in mainland Africa",
+                        "Currency is the franc",
+                        "Home to Gorée Island, major slave trade site",
+                        "Surrounds Gambia on three sides"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Guinea-Bissau",
+                    capital: "Bissau",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Flag_of_Guinea-Bissau.svg/1200px-Flag_of_Guinea-Bissau.svg.png",
+                    clues: [
+                        "Former Portuguese colony",
+                        "Currency is the franc",
+                        "One of least visited countries in world",
+                        "Home to Bijagós Archipelago"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Guinea",
+                    capital: "Conakry",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/Flag_of_Guinea.svg/1200px-Flag_of_Guinea.svg.png",
+                    clues: [
+                        "Not to be confused with Guinea-Bissau or Equatorial Guinea",
+                        "Currency is the franc",
+                        "Source of Niger River",
+                        "World's largest reserves of bauxite"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Sierra Leone",
+                    capital: "Freetown",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/Flag_of_Sierra_Leone.svg/1200px-Flag_of_Sierra_Leone.svg.png",
+                    clues: [
+                        "Named by Portuguese for 'Lion Mountains'",
+                        "Currency is the leone",
+                        "Home to third largest natural harbor in world",
+                        "Site of devastating civil war in 1990s"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Liberia",
+                    capital: "Monrovia",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Flag_of_Liberia.svg/1200px-Flag_of_Liberia.svg.png",
+                    clues: [
+                        "Founded by freed American slaves",
+                        "Currency is the dollar",
+                        "Capital named after US President James Monroe",
+                        "Only African country never colonized by Europeans (except Ethiopia)"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Côte d'Ivoire",
+                    capital: "Yamoussoukro",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_C%C3%B4te_d%27Ivoire.svg/1200px-Flag_of_C%C3%B4te_d%27Ivoire.svg.png",
+                    clues: [
+                        "Also known as Ivory Coast",
+                        "Currency is the franc",
+                        "World's largest producer of cocoa",
+                        "Political capital is Yamoussoukro, economic capital is Abidjan"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ghana",
+                    capital: "Accra",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Flag_of_Ghana.svg/1200px-Flag_of_Ghana.svg.png",
+                    clues: [
+                        "First sub-Saharan country to gain independence from colonial rule",
+                        "Currency is the cedi",
+                        "Formerly known as Gold Coast",
+                        "Home to Lake Volta, largest artificial lake by surface area"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Togo",
+                    capital: "Lomé",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Flag_of_Togo.svg/1200px-Flag_of_Togo.svg.png",
+                    clues: [
+                        "Narrow country in West Africa",
+                        "Currency is the franc",
+                        "Former German colony",
+                        "Name comes from 'to' (water) and 'go' (shore) in Ewe language"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Benin",
+                    capital: "Porto-Novo",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Flag_of_Benin.svg/1200px-Flag_of_Benin.svg.png",
+                    clues: [
+                        "Formerly known as Dahomey",
+                        "Currency is the franc",
+                        "Home to ancient Kingdom of Dahomey",
+                        "Birthplace of voodoo religion"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Burkina Faso",
+                    capital: "Ouagadougou",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Flag_of_Burkina_Faso.svg/1200px-Flag_of_Burkina_Faso.svg.png",
+                    clues: [
+                        "Formerly known as Upper Volta",
+                        "Currency is the franc",
+                        "Name means 'Land of Honest People'",
+                        "One of poorest countries in world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mali",
+                    capital: "Bamako",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Flag_of_Mali.svg/1200px-Flag_of_Mali.svg.png",
+                    clues: [
+                        "Home to ancient city of Timbuktu",
+                        "Currency is the franc",
+                        "Former center of Mali Empire",
+                        "Most of country is Sahara Desert"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Niger",
+                    capital: "Niamey",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Flag_of_Niger.svg/1200px-Flag_of_Niger.svg.png",
+                    clues: [
+                        "Named after Niger River",
+                        "Currency is the franc",
+                        "One of hottest countries in world",
+                        "Not to be confused with Nigeria"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mauritania",
+                    capital: "Nouakchott",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Flag_of_Mauritania.svg/1200px-Flag_of_Mauritania.svg.png",
+                    clues: [
+                        "Last country to abolish slavery (1981)",
+                        "Currency is the ouguiya",
+                        "Most of country is Sahara Desert",
+                        "Only country where all citizens are Muslim by law"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Cape Verde",
+                    capital: "Praia",
+                    flag: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Flag_of_Cape_Verde.svg/1200px-Flag_of_Cape_Verde.svg.png",
+                    clues: [
+                        "Archipelago off west Africa",
+                        "Currency is the escudo",
+                        "Former Portuguese colony",
+                        "Name means 'Green Cape'"
+                    ],
+                    difficulty: "hard"
+                }
+            ],
+            cities: [
+                {
+                    name: "New York City",
+                    country: "United States",
+                    clues: [
+                        "Known as the 'Big Apple'",
+                        "Home to Statue of Liberty and Times Square",
+                        "Most populous city in the US",
+                        "Five boroughs including Manhattan and Brooklyn"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "London",
+                    country: "United Kingdom",
+                    clues: [
+                        "Capital of England and the UK",
+                        "Home to Big Ben and Buckingham Palace",
+                        "River Thames flows through it",
+                        "Has a famous underground system called the Tube"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Paris",
+                    country: "France",
+                    clues: [
+                        "Known as the 'City of Light'",
+                        "Home to Eiffel Tower and Louvre Museum",
+                        "River Seine flows through it",
+                        "Famous for its fashion and cuisine"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Tokyo",
+                    country: "Japan",
+                    clues: [
+                        "Most populous metropolitan area in the world",
+                        "Home to Shibuya Crossing and Tokyo Tower",
+                        "Hosted 2020 Summer Olympics",
+                        "Famous for its high-tech gadgets and neon lights"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Sydney",
+                    country: "Australia",
+                    clues: [
+                        "Largest city in Australia",
+                        "Home to Sydney Opera House and Harbour Bridge",
+                        "Hosted 2000 Summer Olympics",
+                        "Located on the east coast of Australia"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Rio de Janeiro",
+                    country: "Brazil",
+                    clues: [
+                        "Known for its Carnival celebration",
+                        "Home to Christ the Redeemer statue and Copacabana Beach",
+                        "Hosted 2016 Summer Olympics",
+                        "Portuguese-speaking city"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Rome",
+                    country: "Italy",
+                    clues: [
+                        "Known as the 'Eternal City'",
+                        "Home to Colosseum and Vatican City",
+                        "Capital of Italy",
+                        "Ancient capital of the Roman Empire"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Cairo",
+                    country: "Egypt",
+                    clues: [
+                        "Largest city in the Arab world",
+                        "Home to Pyramids of Giza and Sphinx",
+                        "Located on the Nile River",
+                        "Capital of Egypt"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Moscow",
+                    country: "Russia",
+                    clues: [
+                        "Largest city in Europe",
+                        "Home to Red Square and Kremlin",
+                        "Capital of Russia",
+                        "Famous for its metro system with ornate stations"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Beijing",
+                    country: "China",
+                    clues: [
+                        "Capital of China",
+                        "Home to Forbidden City and Great Wall",
+                        "Hosted 2008 Summer Olympics",
+                        "Famous for its smog problems"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Mexico City",
+                    country: "Mexico",
+                    clues: [
+                        "Largest Spanish-speaking city in the world",
+                        "Built on ancient Aztec capital Tenochtitlan",
+                        "High elevation causes air pollution to be trapped",
+                        "Home to Frida Kahlo Museum"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Istanbul",
+                    country: "Turkey",
+                    clues: [
+                        "Only city spanning two continents (Europe and Asia)",
+                        "Formerly known as Constantinople",
+                        "Home to Hagia Sophia and Blue Mosque",
+                        "Strategic location on Bosporus Strait"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Dubai",
+                    country: "United Arab Emirates",
+                    clues: [
+                        "Known for luxury shopping and ultramodern architecture",
+                        "Home to Burj Khalifa, world's tallest building",
+                        "Has artificial Palm Islands",
+                        "Major global business hub"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Bangkok",
+                    country: "Thailand",
+                    clues: [
+                        "Capital of Thailand",
+                        "Full name is one of longest city names in world",
+                        "Famous for its floating markets",
+                        "Home to Grand Palace and Wat Arun"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Singapore",
+                    country: "Singapore",
+                    clues: [
+                        "City-state in Southeast Asia",
+                        "Known for its strict laws and cleanliness",
+                        "Home to Marina Bay Sands and Gardens by the Bay",
+                        "Major financial center"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Hong Kong",
+                    country: "China",
+                    clues: [
+                        "Special Administrative Region of China",
+                        "Former British colony until 1997",
+                        "Known for its skyline and Victoria Harbour",
+                        "One of most densely populated places in world"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Los Angeles",
+                    country: "United States",
+                    clues: [
+                        "Second largest city in the US",
+                        "Home to Hollywood and Disneyland",
+                        "Known for its car culture and freeways",
+                        "Hosted 1932 and 1984 Summer Olympics"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Toronto",
+                    country: "Canada",
+                    clues: [
+                        "Largest city in Canada",
+                        "Home to CN Tower and Rogers Centre",
+                        "Most multicultural city in the world",
+                        "Located on Lake Ontario"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Berlin",
+                    country: "Germany",
+                    clues: [
+                        "Capital of Germany",
+                        "Divided by Berlin Wall during Cold War",
+                        "Home to Brandenburg Gate and Reichstag",
+                        "Known for its techno music scene"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Mumbai",
+                    country: "India",
+                    clues: [
+                        "Financial capital of India",
+                        "Home to Bollywood film industry",
+                        "Formerly known as Bombay",
+                        "Has Elephanta Caves nearby"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Shanghai",
+                    country: "China",
+                    clues: [
+                        "Largest city in China by population",
+                        "Major global financial center",
+                        "Home to the Bund and Oriental Pearl Tower",
+                        "Located at mouth of Yangtze River"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Buenos Aires",
+                    country: "Argentina",
+                    clues: [
+                        "Capital of Argentina",
+                        "Known as 'Paris of South America'",
+                        "Birthplace of tango dance",
+                        "Home to La Recoleta Cemetery"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Johannesburg",
+                    country: "South Africa",
+                    clues: [
+                        "Largest city in South Africa",
+                        "Economic hub of Africa",
+                        "Located on the Witwatersrand gold reef",
+                        "Home to Soweto township"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Seoul",
+                    country: "South Korea",
+                    clues: [
+                        "Capital of South Korea",
+                        "Home to Gyeongbokgung Palace and N Seoul Tower",
+                        "One of most technologically advanced cities",
+                        "Hosted 1988 Summer Olympics"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Jakarta",
+                    country: "Indonesia",
+                    clues: [
+                        "Capital of Indonesia",
+                        "Located on island of Java",
+                        "Sinking due to groundwater extraction",
+                        "One of most populous urban areas in world"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Lagos",
+                    country: "Nigeria",
+                    clues: [
+                        "Largest city in Africa by population",
+                        "Major financial center in Africa",
+                        "Located on Lagos Lagoon",
+                        "Fastest growing city in Africa"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Nairobi",
+                    country: "Kenya",
+                    clues: [
+                        "Capital of Kenya",
+                        "Only capital city with a national park",
+                        "Home to United Nations offices in Africa",
+                        "Name means 'place of cool waters' in Maasai"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Kinshasa",
+                    country: "Democratic Republic of the Congo",
+                    clues: [
+                        "Largest city in Africa by area",
+                        "Capital of DRC",
+                        "Faces Brazzaville across Congo River",
+                        "Formerly known as Léopoldville"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Tehran",
+                    country: "Iran",
+                    clues: [
+                        "Capital of Iran",
+                        "Located at foot of Alborz Mountains",
+                        "Home to Golestan Palace and Azadi Tower",
+                        "One of most polluted cities in world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Baghdad",
+                    country: "Iraq",
+                    clues: [
+                        "Capital of Iraq",
+                        "Ancient center of Islamic learning",
+                        "Located on Tigris River",
+                        "Home to Abbasid Palace"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Riyadh",
+                    country: "Saudi Arabia",
+                    clues: [
+                        "Capital of Saudi Arabia",
+                        "Located in center of Arabian Peninsula",
+                        "Home to Kingdom Centre and Al Faisaliyah Center",
+                        "Strict Islamic laws enforced"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Lima",
+                    country: "Peru",
+                    clues: [
+                        "Capital of Peru",
+                        "Located in coastal desert",
+                        "Home to Plaza Mayor and Larco Museum",
+                        "Named after oracle in what is now Italy"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bogotá",
+                    country: "Colombia",
+                    clues: [
+                        "Capital of Colombia",
+                        "Located in Andes Mountains",
+                        "Home to Gold Museum and Monserrate",
+                        "One of highest capital cities in world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Caracas",
+                    country: "Venezuela",
+                    clues: [
+                        "Capital of Venezuela",
+                        "Located in northern mountain valley",
+                        "Home to Avila Mountain",
+                        "High crime rates and political instability"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Havana",
+                    country: "Cuba",
+                    clues: [
+                        "Capital of Cuba",
+                        "Known for its colonial architecture",
+                        "Home to Malecón seawall",
+                        "Famous for classic American cars"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Santiago",
+                    country: "Chile",
+                    clues: [
+                        "Capital of Chile",
+                        "Located in central valley",
+                        "Home to San Cristóbal Hill",
+                        "One of most developed cities in Latin America"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Lima",
+                    country: "Peru",
+                    clues: [
+                        "Capital of Peru",
+                        "Located in coastal desert",
+                        "Home to Plaza Mayor and Larco Museum",
+                        "Named after oracle in what is now Italy"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Quito",
+                    country: "Ecuador",
+                    clues: [
+                        "Capital of Ecuador",
+                        "Second highest capital city in world",
+                        "First city to be named UNESCO World Heritage Site",
+                        "Located near equator"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "La Paz",
+                    country: "Bolivia",
+                    clues: [
+                        "Administrative capital of Bolivia",
+                        "Highest capital city in world",
+                        "Located in canyon created by Choqueyapu River",
+                        "Home to Witches' Market"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Asunción",
+                    country: "Paraguay",
+                    clues: [
+                        "Capital of Paraguay",
+                        "One of oldest cities in South America",
+                        "Located on eastern bank of Paraguay River",
+                        "Home to Panteón Nacional de los Héroes"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Montevideo",
+                    country: "Uruguay",
+                    clues: [
+                        "Capital of Uruguay",
+                        "Southernmost capital city in Americas",
+                        "Home to Plaza Independencia",
+                        "Highest quality of life in Latin America"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Kathmandu",
+                    country: "Nepal",
+                    clues: [
+                        "Capital of Nepal",
+                        "Located in Kathmandu Valley",
+                        "Home to Swayambhunath and Pashupatinath Temple",
+                        "Gateway to Mount Everest"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Dhaka",
+                    country: "Bangladesh",
+                    clues: [
+                        "Capital of Bangladesh",
+                        "One of most densely populated cities in world",
+                        "Located on Buriganga River",
+                        "Center of world's garment industry"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Hanoi",
+                    country: "Vietnam",
+                    clues: [
+                        "Capital of Vietnam",
+                        "Located on Red River",
+                        "Home to Ho Chi Minh Mausoleum and Old Quarter",
+                        "Over 1,000 years old"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Phnom Penh",
+                    country: "Cambodia",
+                    clues: [
+                        "Capital of Cambodia",
+                        "Located at confluence of Mekong and Tonlé Sap rivers",
+                        "Home to Royal Palace and Killing Fields",
+                        "French colonial architecture"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Vientiane",
+                    country: "Laos",
+                    clues: [
+                        "Capital of Laos",
+                        "Located on Mekong River",
+                        "Home to Pha That Luang and Patuxai",
+                        "Most relaxed capital in Southeast Asia"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Yangon",
+                    country: "Myanmar",
+                    clues: [
+                        "Former capital of Myanmar",
+                        "Home to Shwedagon Pagoda",
+                        "Largest city in Myanmar",
+                        "Formerly known as Rangoon"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ulaanbaatar",
+                    country: "Mongolia",
+                    clues: [
+                        "Capital of Mongolia",
+                        "Coldest capital city in world",
+                        "Home to Gandantegchinlen Monastery",
+                        "Half of Mongolia's population lives here"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Tashkent",
+                    country: "Uzbekistan",
+                    clues: [
+                        "Capital of Uzbekistan",
+                        "Largest city in Central Asia",
+                        "Important Silk Road stop",
+                        "Heavily damaged by 1966 earthquake"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Bishkek",
+                    country: "Kyrgyzstan",
+                    clues: [
+                        "Capital of Kyrgyzstan",
+                        "Located at foot of Tian Shan mountains",
+                        "Formerly known as Frunze",
+                        "Home to Ala-Too Square"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Dushanbe",
+                    country: "Tajikistan",
+                    clues: [
+                        "Capital of Tajikistan",
+                        "Located at confluence of Varzob and Kofarnihon rivers",
+                        "Name means 'Monday' in Persian",
+                        "Home to world's tallest flagpole (2011-2014)"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Ashgabat",
+                    country: "Turkmenistan",
+                    clues: [
+                        "Capital of Turkmenistan",
+                        "Known for white marble buildings",
+                        "Located between Karakum Desert and Kopet Dag mountains",
+                        "Home to Independence Monument"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Tbilisi",
+                    country: "Georgia",
+                    clues: [
+                        "Capital of Georgia",
+                        "Located on Kura River",
+                        "Known for its sulfur baths",
+                        "Home to Narikala Fortress"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Yerevan",
+                    country: "Armenia",
+                    clues: [
+                        "Capital of Armenia",
+                        "One of oldest continuously inhabited cities in world",
+                        "Located along Hrazdan River",
+                        "Home to Mount Ararat views"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Baku",
+                    country: "Azerbaijan",
+                    clues: [
+                        "Capital of Azerbaijan",
+                        "Located on Caspian Sea",
+                        "Known for its Flame Towers",
+                        "Home to Old City with Maiden Tower"
+                    ],
+                    difficulty: "hard"
+                }
+            ],
+            features: [
+                {
+                    name: "Amazon Rainforest",
+                    type: "Rainforest",
+                    location: "South America",
+                    clues: [
+                        "Largest tropical rainforest in the world",
+                        "Produces 20% of Earth's oxygen",
+                        "Home to 10% of known species",
+                        "Spans nine countries"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Nile River",
+                    type: "River",
+                    location: "Africa",
+                    clues: [
+                        "Longest river in the world",
+                        "Flows north through 11 countries",
+                        "Primary water source for Egypt",
+                        "Has two main tributaries: White Nile and Blue Nile"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Mount Everest",
+                    type: "Mountain",
+                    location: "Asia",
+                    clues: [
+                        "Highest point on Earth above sea level",
+                        "Located on border of Nepal and China",
+                        "Part of the Himalayas",
+                        "First climbed in 1953 by Hillary and Norgay"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Sahara Desert",
+                    type: "Desert",
+                    location: "Africa",
+                    clues: [
+                        "Largest hot desert in the world",
+                        "Covers most of North Africa",
+                        "Home to the Tuareg people",
+                        "Includes the Libyan and Nubian deserts"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Great Barrier Reef",
+                    type: "Reef",
+                    location: "Australia",
+                    clues: [
+                        "World's largest coral reef system",
+                        "Visible from space",
+                        "Home to thousands of marine species",
+                        "Seriously threatened by climate change"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Grand Canyon",
+                    type: "Canyon",
+                    location: "United States",
+                    clues: [
+                        "Carved by Colorado River",
+                        "Located in Arizona",
+                        "277 miles long and up to 18 miles wide",
+                        "Layered rock reveals geological history"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Victoria Falls",
+                    type: "Waterfall",
+                    location: "Zambia/Zimbabwe",
+                    clues: [
+                        "Largest waterfall in the world by combined width and height",
+                        "Local name is Mosi-oa-Tunya ('The Smoke That Thunders')",
+                        "Discovered by David Livingstone in 1855",
+                        "Part of Zambezi River"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Dead Sea",
+                    type: "Salt Lake",
+                    location: "Middle East",
+                    clues: [
+                        "Lowest point on Earth's surface",
+                        "One of saltiest bodies of water",
+                        "People float easily due to high salt content",
+                        "Bordered by Jordan and Israel"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Great Lakes",
+                    type: "Lakes",
+                    location: "North America",
+                    clues: [
+                        "Largest group of freshwater lakes by total area",
+                        "Consist of Superior, Michigan, Huron, Erie, and Ontario",
+                        "Formed by glacial activity",
+                        "Shared by US and Canada"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Himalayas",
+                    type: "Mountain Range",
+                    location: "Asia",
+                    clues: [
+                        "Highest mountain range in the world",
+                        "Includes Mount Everest and K2",
+                        "Formed by collision of Indian and Eurasian plates",
+                        "Source of major rivers like Ganges and Indus"
+                    ],
+                    difficulty: "easy"
+                },
+                {
+                    name: "Andes",
+                    type: "Mountain Range",
+                    location: "South America",
+                    clues: [
+                        "Longest continental mountain range in the world",
+                        "Home to highest volcanoes",
+                        "Source of Amazon River",
+                        "Runs through seven countries"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Gobi Desert",
+                    type: "Desert",
+                    location: "Asia",
+                    clues: [
+                        "Largest desert in Asia",
+                        "Known for its dinosaur fossils",
+                        "Cold desert with extreme temperature variations",
+                        "Expanding due to desertification"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Atacama Desert",
+                    type: "Desert",
+                    location: "South America",
+                    clues: [
+                        "Driest non-polar desert in the world",
+                        "Located in Chile",
+                        "Used as Mars simulation site",
+                        "Rich in mineral deposits"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Danube River",
+                    type: "River",
+                    location: "Europe",
+                    clues: [
+                        "Second longest river in Europe",
+                        "Flows through 10 countries",
+                        "Passes through Vienna, Budapest, and Belgrade",
+                        "Empties into Black Sea"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Yangtze River",
+                    type: "River",
+                    location: "China",
+                    clues: [
+                        "Longest river in Asia",
+                        "Site of Three Gorges Dam",
+                        "Home to endangered Yangtze river dolphin",
+                        "Major transportation route"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Lake Baikal",
+                    type: "Lake",
+                    location: "Russia",
+                    clues: [
+                        "Deepest lake in the world",
+                        "Contains 20% of world's unfrozen freshwater",
+                        "Home to unique freshwater seals",
+                        "Over 25 million years old"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Serengeti",
+                    type: "Savanna",
+                    location: "Africa",
+                    clues: [
+                        "Famous for annual wildebeest migration",
+                        "Tanzania's first national park",
+                        "Means 'endless plains' in Maasai",
+                        "Home to Big Five game animals"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Patagonia",
+                    type: "Region",
+                    location: "South America",
+                    clues: [
+                        "Shared by Argentina and Chile",
+                        "Known for its dramatic landscapes",
+                        "Home to Perito Moreno Glacier",
+                        "Southernmost inhabited region of the world"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Antarctica",
+                    type: "Continent",
+                    location: "Antarctica",
+                    clues: [
+                        "Coldest, driest, and windiest continent",
+                        "Contains about 70% of world's freshwater",
+                        "No permanent human residents",
+                        "Governed by Antarctic Treaty System"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Ring of Fire",
+                    type: "Volcanic Belt",
+                    location: "Pacific Ocean",
+                    clues: [
+                        "Area with high volcanic and seismic activity",
+                        "Home to 75% of world's volcanoes",
+                        "Site of frequent earthquakes",
+                        "Forms horseshoe shape around Pacific Ocean"
+                    ],
+                    difficulty: "medium"
+                },
+                {
+                    name: "Mekong River",
+                    type: "River",
+                    location: "Asia",
+                    clues: [
+                        "Twelfth longest river in the world",
+                        "Flows through six countries",
+                        "Vital for rice cultivation",
+                        "Home to giant freshwater stingrays"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Congo River",
+                    type: "River",
+                    location: "Africa",
+                    clues: [
+                        "Second longest river in Africa",
+                        "Deepest river in the world",
+                        "Flows through rainforest",
+                        "Formerly known as Zaire River"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Lake Titicaca",
+                    type: "Lake",
+                    location: "South America",
+                    clues: [
+                        "Highest navigable lake in the world",
+                        "Located on border of Peru and Bolivia",
+                        "Home to Uros people's floating islands",
+                        "Sacred in Inca mythology"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Kalahari Desert",
+                    type: "Desert",
+                    location: "Africa",
+                    clues: [
+                        "Large semi-arid sandy savanna",
+                        "Home to San people",
+                        "Covers much of Botswana",
+                        "Not a true desert as it receives too much rain"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Drake Passage",
+                    type: "Strait",
+                    location: "Between South America and Antarctica",
+                    clues: [
+                        "Connects Atlantic and Pacific Oceans",
+                        "One of most treacherous sea passages",
+                        "Named after Sir Francis Drake",
+                        "Widest strait in the world"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Borneo",
+                    type: "Island",
+                    location: "Asia",
+                    clues: [
+                        "Third largest island in the world",
+                        "Shared by three countries",
+                        "Home to orangutans and pygmy elephants",
+                        "Contains Mount Kinabalu"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Siberia",
+                    type: "Region",
+                    location: "Russia",
+                    clues: [
+                        "Covers 77% of Russia's land area",
+                        "Known for extreme cold",
+                        "Home to Lake Baikal",
+                        "Rich in natural resources"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Greenland",
+                    type: "Island",
+                    location: "North America",
+                    clues: [
+                        "World's largest island",
+                        "Autonomous territory of Denmark",
+                        "Mostly covered by ice sheet",
+                        "Home to Inuit people"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Iguazu Falls",
+                    type: "Waterfall",
+                    location: "South America",
+                    clues: [
+                        "Largest waterfall system in the world",
+                        "Located on border of Argentina and Brazil",
+                        "Taller than Niagara and wider than Victoria",
+                        "Name means 'big water' in Guarani"
+                    ],
+                    difficulty: "hard"
+                },
+                {
+                    name: "Mariana Trench",
+                    type: "Trench",
+                    location: "Pacific Ocean",
+                    clues: [
+                        "Deepest part of world's oceans",
+                        "Challenger Deep is lowest point",
+                        "Located east of Mariana Islands",
+                        "Pressure at bottom is over 1,000 atmospheres"
+                    ],
+                    difficulty: "hard"
+                }
+            ]
+        };
+
+        // Game state
+        let currentQuestion = null;
+        let score = 0;
+        let totalQuestions = 0;
+        let correctAnswers = 0;
+
+        // DOM elements
+        const flashcard = document.getElementById('flashcard');
+        const flashcardFront = document.querySelector('.flashcard-front');
+        const flashcardBack = document.querySelector('.flashcard-back');
+        const scoreDisplay = document.getElementById('score');
+        const totalQuestionsDisplay = document.getElementById('total-questions');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const difficultySelect = document.getElementById('difficulty');
+        const categorySelect = document.getElementById('category');
+        const newQuestionBtn = document.getElementById('new-question-btn');
+        const correctBtn = document.getElementById('correct-btn');
+        const incorrectBtn = document.getElementById('incorrect-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        // Event listeners
+        flashcard.addEventListener('click', flipCard);
+        newQuestionBtn.addEventListener('click', generateQuestion);
+        correctBtn.addEventListener('click', () => handleAnswer(true));
+        incorrectBtn.addEventListener('click', () => handleAnswer(false));
+        nextBtn.addEventListener('click', generateQuestion);
+
+        // Initialize
+        generateQuestion();
+
+        // Functions
+        function flipCard() {
+            if (currentQuestion) {
+                flashcard.classList.toggle('flipped');
+            }
+        }
+
+        function generateQuestion() {
+            // Reset card position
+            flashcard.classList.remove('flipped');
+            
+            // Get selected difficulty and category
+            const difficulty = difficultySelect.value;
+            const category = categorySelect.value;
+            
+            // Filter questions based on selection
+            let possibleQuestions = [];
+            
+            if (category === 'all' || category === 'countries') {
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.countries.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(country => ({
+                        type: 'country',
+                        question: `Which country is this?`,
+                        answer: country.name,
+                        flag: country.flag,
+                        additionalInfo: country.clues[Math.floor(Math.random() * country.clues.length)],
+                        difficulty: country.difficulty
+                    }))
+                );
+                
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.countries.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(country => ({
+                        type: 'capital',
+                        question: `What is the capital of ${country.name}?`,
+                        answer: country.capital,
+                        flag: country.flag,
+                        additionalInfo: country.clues[Math.floor(Math.random() * country.clues.length)],
+                        difficulty: country.difficulty
+                    }))
+                );
+            }
+            
+            if (category === 'all' || category === 'flags') {
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.countries.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(country => ({
+                        type: 'flag',
+                        question: `Which country's flag is this?`,
+                        answer: country.name,
+                        flag: country.flag,
+                        additionalInfo: country.clues[Math.floor(Math.random() * country.clues.length)],
+                        difficulty: country.difficulty
+                    }))
+                );
+            }
+            
+            if (category === 'all' || category === 'cities') {
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.cities.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(city => ({
+                        type: 'city',
+                        question: `In which country is the city ${city.name} located?`,
+                        answer: city.country,
+                        additionalInfo: city.clues[Math.floor(Math.random() * city.clues.length)],
+                        difficulty: city.difficulty
+                    }))
+                );
+            }
+            
+            if (category === 'all' || category === 'features') {
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.features.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(feature => ({
+                        type: 'feature',
+                        question: `In which continent is the ${feature.name} located?`,
+                        answer: feature.location,
+                        additionalInfo: feature.clues[Math.floor(Math.random() * feature.clues.length)],
+                        difficulty: feature.difficulty
+                    }))
+                );
+                
+                possibleQuestions = possibleQuestions.concat(
+                    geographyDB.features.filter(q => difficulty === 'all' || q.difficulty === difficulty)
+                    .map(feature => ({
+                        type: 'feature_type',
+                        question: `What type of geographical feature is the ${feature.name}?`,
+                        answer: feature.type,
+                        additionalInfo: feature.clues[Math.floor(Math.random() * feature.clues.length)],
+                        difficulty: feature.difficulty
+                    }))
+                );
+            }
+            
+            // Select random question
+            if (possibleQuestions.length === 0) {
+                flashcardFront.innerHTML = '<div class="loading">No questions match your selected filters. Try changing difficulty or category.</div>';
+                flashcardBack.innerHTML = '';
+                currentQuestion = null;
+                return;
+            }
+            
+            currentQuestion = possibleQuestions[Math.floor(Math.random() * possibleQuestions.length)];
+            
+            // Display question
+            let frontContent = `
+                <span class="category-tag">${currentQuestion.type.toUpperCase()}</span>
+                <span class="difficulty-tag ${currentQuestion.difficulty}">${currentQuestion.difficulty.toUpperCase()}</span>
+                <div class="question">${currentQuestion.question}</div>
+            `;
+            
+            if (currentQuestion.type === 'flag') {
+                frontContent += `<img src="${currentQuestion.flag}" alt="Flag" class="flag-img">`;
+            }
+            
+            flashcardFront.innerHTML = frontContent;
+            
+            // Prepare answer
+            let backContent = `
+                <span class="category-tag">${currentQuestion.type.toUpperCase()}</span>
+                <span class="difficulty-tag ${currentQuestion.difficulty}">${currentQuestion.difficulty.toUpperCase()}</span>
+                <div class="answer">${currentQuestion.answer}</div>
+                <div class="additional-info">${currentQuestion.additionalInfo}</div>
+            `;
+            
+            if (currentQuestion.flag && currentQuestion.type !== 'flag') {
+                const country = geographyDB.countries.find(c => c.name === currentQuestion.answer || c.capital === currentQuestion.answer);
+                if (country) {
+                    backContent += `<img src="${country.flag}" alt="Flag" class="flag-img">`;
+                }
+            }
+            
+            flashcardBack.innerHTML = backContent;
+        }
+
+        function handleAnswer(isCorrect) {
+            if (!currentQuestion) return;
+            
+            totalQuestions++;
+            if (isCorrect) {
+                score++;
+                correctAnswers++;
+            }
+            
+            updateScoreDisplay();
+            flashcard.classList.add('flipped');
+        }
+
+        function updateScoreDisplay() {
+            scoreDisplay.textContent = score;
+            totalQuestionsDisplay.textContent = totalQuestions;
+            const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+            accuracyDisplay.textContent = `${accuracy}%`;
+        }
+    </script>
+</body>
+</html>
